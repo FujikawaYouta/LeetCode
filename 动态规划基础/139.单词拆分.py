@@ -1,28 +1,18 @@
 class Solution:
     def wordBreak(self, s: str, wordDict: list[str]) -> bool:
-        n = len(s)
-        candidates = []
-        for word in wordDict:
-            n_cur = len(word)
-            if word == s[:n_cur]:
-                if n_cur==n:
-                    return True
-                candidates.append([word, n_cur])
-                
-        cur_idx = 0
-        while len(candidates)>0:
-            start_idx = candidates[cur_idx][1]
-            for word in wordDict:
-                end_idx = start_idx+len(word)
-                if word == s[start_idx:end_idx]:
-                    if end_idx==n:
-                        return True
-                    candidates.append([word, end_idx])
-            candidates.pop(0)
-        return False
-
+        m = len(s)
+        reachable_idx = [0]
+        wordDict = set(wordDict)
+        for cur_idx in range(1, m+1):
+            for start_idx in reachable_idx:
+                if s[start_idx:cur_idx] in wordDict:
+                    reachable_idx.append(cur_idx)
+                    break
+        return m==reachable_idx[-1]
     
 if __name__=='__main__':
     sol = Solution()
     print(sol.wordBreak(s = "leetcode", wordDict = ["leet", "code"]))
     print(sol.wordBreak(s = "a", wordDict = ["a"]))
+    print(sol.wordBreak(s = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab",
+                        wordDict = ["a","aa","aaa","aaaa","aaaaa","aaaaaa","aaaaaaa","aaaaaaaa","aaaaaaaaa","aaaaaaaaaa"]))
